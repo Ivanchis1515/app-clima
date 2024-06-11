@@ -31,6 +31,10 @@ const AirQualityScreen = () => {
     const [presion, setPresion] = useState(0);
     const [descripcion, setDescripcion] = useState('');
 
+    //hooks para la calidad del los 5 dias
+    const [temps, setTemps] = useState([]);
+    const [dates, setDates] = useState([]);
+
     const token = 'dc70001fc567310aca4f8f2dd2ec4ddaf33a677f';
     const apiKey = 'b90add97e8658958811faddd000ec8b5';
 
@@ -44,7 +48,28 @@ const AirQualityScreen = () => {
         setHumedad(data.main.humidity);
         setPresion(data.main.pressure);
         setDescripcion(data.weather[0].description);
+    }
 
+    const getWeatherForeCast = async (lat, lon) => {
+        console.log(lat, lon);
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log("prediccion del clima en los siguientes 5 dias", data);
+
+        const lista = data.list;
+        let temperaturas = []
+        let fechas = []
+        lista.forEach(objeto => {
+            temperaturas.push(objeto.main.temp);
+            fechas.push(objeto.dt_txt);
+        });
+
+        setTemps(temperaturas);
+        setDates(fechas);
+
+        console.log(temperaturas);
+        console.log(fechas)
     }
 
     const getAQI = async (ciudad) => {
@@ -109,6 +134,7 @@ const AirQualityScreen = () => {
     useEffect(() => {
         getAQI(city);
         getWeather(latitud, longitud);
+        getWeatherForeCast(latitud, longitud);
     }, [])
 
 
@@ -173,7 +199,11 @@ const AirQualityScreen = () => {
                     </div>
                     <div className="row">
                         <div className="col-12">
-                            <LineCharts />
+                            <LineCharts 
+                                temperaturas={temps}
+                                fechas={dates}
+                                titulo={"Prediccion del clima los proximos 5 dias"}                                             
+                            />
                         </div>
                     </div>
                 </div>
