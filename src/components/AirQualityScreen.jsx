@@ -3,6 +3,7 @@ import Componente1 from './Componente1';
 
 //importacion de los prop-types
 import PropTypes from 'prop-types';
+import LineCharts from '../echarts/LineCharts';
 
 const AirQualityScreen = () => {
     const [city, setCity] = useState('Puebla');
@@ -168,6 +169,11 @@ const AirQualityScreen = () => {
                         </div>
                         <div className='col-lg-4 col-md-6 col-xs-12'>
                             <Componente1 />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <LineCharts />
                         </div>
                     </div>
                 </div>
